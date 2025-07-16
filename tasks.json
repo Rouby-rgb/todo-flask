@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "text": "Buy groceries",
+    "date": "2025-07-17",
+    "priority": "Medium",
+    "category": "Shopping",
+    "completed": false
+  },
+  {
+    "text": "Cook Angwamu",
+    "date": "2025-07-16",
+    "priority": "Medium",
+    "category": "Personal",
+    "completed": false
+  },
+  {
+    "text": "Hangout with Herbert",
+    "completed": false,
+    "priority": "Medium",
+    "category": "Urgent",
+    "due_date": "2025-07-16",
+    "description": "Just work together"
+  },
+  {
+    "text": "Learn Python",
+    "completed": true,
+    "priority": "High",
+    "category": "School",
+    "due_date": "2025-07-17",
+    "description": "To be a good programmer"
+  }
+]
