@@ -2,27 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My To Do App ✅</title>
+  <title>To Do App</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="container">
-    <h1>My To Do List ✅</h1>
+    <h1>My Enhanced To Do List ✅</h1>
 
-    <form action="/add" method="POST" class="add-form">
-      <input type="text" name="task" placeholder="Task name" required>
-      <input type="date" name="due_date" required>
-      <input type="text" name="category" placeholder="Category">
+    <form action="/add" method="POST" class="task-form">
+      <input type="text" name="task" placeholder="Enter new task" required>
+      <input type="date" name="due_date" value="{{ now().strftime('%Y-%m-%d') }}">
       <select name="priority">
         <option value="Low">Low</option>
         <option value="Medium" selected>Medium</option>
         <option value="High">High</option>
       </select>
-      <input type="text" name="description" placeholder="Optional description">
+      <input type="text" name="category" placeholder="Category (optional)">
       <button type="submit">Add Task</button>
     </form>
 
-    <form action="/clear_completed" method="POST" style="margin-top: 10px;">
+    <form action="/clear-completed" method="POST" style="margin-top: 10px;">
       <button type="submit">Clear Completed Tasks</button>
     </form>
 
@@ -31,34 +30,35 @@
         <tr>
           <th>#</th>
           <th>Task</th>
-          <th>Category</th>
           <th>Priority</th>
+          <th>Category</th>
           <th>Due Date</th>
-          <th>Description</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for task in tasks %}
-        <tr {% if task.completed %}style="text-decoration: line-through;"{% endif %}>
+        <tr>
           <td>{{ loop.index }}</td>
-          <td>{{ task.text }}</td>
-          <td>{{ task.category }}</td>
-          <td>{{ task.priority }}</td>
+          <td class="{% if task.completed %}completed{% endif %}">{{ task.text }}</td>
+          <td class="priority {{ task.priority | lower }}">{{ task.priority }}</td>
+          <td>{{ task.category or '—' }}</td>
+          <td class="{% if task.due_date and task.due_date < now().strftime('%Y-%m-%d') and not task.completed %}overdue{% endif %}">
+            {{ task.due_date or '—' }}
+          </td>
           <td>
-            {% if task.due_date %}
-              {{ task.due_date }}
-              {% if task.due_date < current_date and not task.completed %}
-                <span style="color: red;">(Overdue)</span>
-              {% endif %}
+            {% if task.completed %}
+              ✅
+            {% else %}
+              ❌
             {% endif %}
           </td>
-          <td>{{ task.description }}</td>
-          <td>{{ '✅ Done' if task.completed else '❌ Not done' }}</td>
           <td>
-            <form action="/toggle/{{ loop.index0 }}" method="POST" style="display:inline;">
-              <button type="submit">{{ 'Undo' if task.completed else 'Mark Done' }}</button>
+            <form action="/complete/{{ loop.index0 }}" method="POST" style="display:inline;">
+              <button type="submit">
+                {% if task.completed %}Undo{% else %}Mark Done{% endif %}
+              </button>
             </form>
             <form action="/edit/{{ loop.index0 }}" method="GET" style="display:inline;">
               <button type="submit">Edit</button>
